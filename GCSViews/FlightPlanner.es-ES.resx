@@ -339,9 +339,6 @@
   <data name="CHK_holdalt.Text" xml:space="preserve">
     <value>Mantener Altitud por defecto</value>
   </data>
-  <data name="button1.Text" xml:space="preserve">
-    <value>Grafico de Elevación</value>
-  </data>
   <data name="clearMissionToolStripMenuItem.Text" xml:space="preserve">
     <value>Limpiar Misión</value>
   </data>

@@ -98,6 +98,7 @@ namespace MissionPlanner.GCSViews
         private GMapMarker CurrentGMapMarker;
         public GMapMarker currentMarker;
         private GMapMarkerPOI CurrentPOIMarker;
+        private GMarkerGoogle CurrentMarkerGoogle;
         private GMapMarkerRallyPt CurrentRallyPt;
         public GMapOverlay drawnpolygonsoverlay;
         private bool fetchpathrip;
@@ -4906,18 +4907,22 @@ namespace MissionPlanner.GCSViews
 
         public void poideleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentPOIMarker == null)
+            if (CurrentPOIMarker == null && CurrentMarkerGoogle == null)
                 return;
-
-            POI.POIDelete(CurrentPOIMarker);
+            else if(CurrentPOIMarker != null)
+                POI.POIDelete(CurrentPOIMarker);
+            else
+                POI.POIDelete(CurrentMarkerGoogle);
         }
 
         public void poieditToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentGMapMarker == null || !(CurrentGMapMarker is GMapMarkerPOI))
+            if ((CurrentGMapMarker == null || !(CurrentGMapMarker is GMapMarkerPOI)) && (CurrentMarkerGoogle == null || !(CurrentMarkerGoogle is GMarkerGoogle)))
                 return;
-
-            POI.POIEdit(CurrentPOIMarker);
+            else if(CurrentGMapMarker is GMapMarkerPOI)
+                POI.POIEdit(CurrentPOIMarker);
+            else
+                POI.POIEdit(CurrentMarkerGoogle);
         }
 
         public void prefetchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -7011,6 +7016,12 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
 
                     CurrentPOIMarker.Position = pnew;
                 }
+                else if(CurrentMarkerGoogle != null)
+                {
+                    PointLatLng pnew = MainMap.FromLocalToLatLng(e.X, e.Y);
+
+                    CurrentMarkerGoogle.Position = pnew;
+                }
                 else if (CurrentGMapMarker != null)
                 {
                     PointLatLng pnew = MainMap.FromLocalToLatLng(e.X, e.Y);
@@ -7099,6 +7110,12 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
                 {
                     POI.POIMove(CurrentPOIMarker);
                     CurrentPOIMarker = null;
+                }
+
+                if (CurrentMarkerGoogle != null)
+                {
+                    POI.POIMove(CurrentMarkerGoogle);
+                    CurrentMarkerGoogle = null;
                 }
 
                 if (CurrentMidLine is GMapMarkerPlus)
@@ -7571,6 +7588,11 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
                     CurrentPOIMarker = item as GMapMarkerPOI;
                 }
 
+                if (item is GMarkerGoogle)
+                {
+                    CurrentMarkerGoogle = item as GMarkerGoogle;
+                }
+
                 if (item is GMapMarkerWP)
                 {
                     //CurrentGMapMarker = item;
@@ -7603,6 +7625,11 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
                 if (item is GMapMarkerPOI)
                 {
                     CurrentPOIMarker = null;
+                }
+
+                if(item is GMarkerGoogle)
+                {
+                    CurrentMarkerGoogle = null;
                 }
 
                 if (item is GMapMarkerPlus && ((GMapMarkerPlus) item).Tag is midline)
@@ -7839,6 +7866,50 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
             MainMap.Position = MainV2.comPort.MAV.cs.HomeLocation;
             if (MainMap.Zoom < 17)
                 MainMap.Zoom = 17;
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+        }
+
+        private void poiatcoordsToolStripMenuItem_Click(double _lat, double _lng, float _alt, int type)
+        {
+            var lat = _lat;
+            var lng = _lng;
+            var alt = _alt;
+            PointLatLngAlt pnt = new PointLatLngAlt(lat, lng, alt);
+
+            switch (type)
+            {
+                case 0:
+                    POI.POIAdd(pnt, "Fuego");
+                    break;
+                case 1:
+                    POI.POIAdd(pnt, "Peligro Electrico");
+                    break;
+            }
+        }
+
+        /*private void button1_Click(object sender, EventArgs e)
+        {
+            //setfromMap(MouseDownEnd.Lat, MouseDownEnd.Lng, (int)float.Parse(TXT_DefaultAlt.Text));
+            poiatcoordsToolStripMenuItem_Click(MouseDownEnd.Lat, MouseDownEnd.Lng, (int)float.Parse(TXT_DefaultAlt.Text), 0);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            poiatcoordsToolStripMenuItem_Click(MouseDownEnd.Lat, MouseDownEnd.Lng, (int)float.Parse(TXT_DefaultAlt.Text), 1);
+        }
+        */
+        private void addFireToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            poiatcoordsToolStripMenuItem_Click(MouseDownEnd.Lat, MouseDownEnd.Lng, (int)float.Parse(TXT_DefaultAlt.Text), 0);
+        }
+
+        private void addElectricHazardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            poiatcoordsToolStripMenuItem_Click(MouseDownEnd.Lat, MouseDownEnd.Lng, (int)float.Parse(TXT_DefaultAlt.Text), 1);
         }
     }
 }

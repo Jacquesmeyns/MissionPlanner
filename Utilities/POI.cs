@@ -1,4 +1,5 @@
 ﻿using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
 using MissionPlanner.Controls;
 using MissionPlanner.Maps;
 using System;
@@ -101,6 +102,23 @@ namespace MissionPlanner.Utilities
             }
         }
 
+        public static void POIDelete(GMarkerGoogle Point)
+        {
+            if (Point == null)
+                return;
+
+            for (int a = 0; a < POI.POIs.Count; a++)
+            {
+                if (POI.POIs[a].Point() == Point.Position)
+                {
+                    POI.POIs.RemoveAt(a);
+                    if (_POIModified != null)
+                        _POIModified(null, null);
+                    return;
+                }
+            }
+        }
+
         public static void POIEdit(GMapMarkerPOI Point)
         {
             if (Point == null)
@@ -123,7 +141,46 @@ namespace MissionPlanner.Utilities
             }
         }
 
+        public static void POIEdit(GMarkerGoogle Point)
+        {
+            if (Point == null)
+                return;
+
+            string output = "";
+
+            if (DialogResult.OK != InputBox.Show("POI", "Enter ID", ref output))
+                return;
+
+            for (int a = 0; a < POI.POIs.Count; a++)
+            {
+                if (POI.POIs[a].Point() == Point.Position)
+                {
+                    POI.POIs[a].Tag = output + "\n" + Point.Position.ToString();
+                    if (_POIModified != null)
+                        _POIModified(null, null);
+                    return;
+                }
+            }
+        }
+
         public static void POIMove(GMapMarkerPOI Point)
+        {
+            for (int a = 0; a < POI.POIs.Count; a++)
+            {
+                if (POIs[a].Tag == Point.ToolTipText)
+                {
+                    POIs[a].Lat = Point.Position.Lat;
+                    POIs[a].Lng = Point.Position.Lng;
+                    POIs[a].Tag = POIs[a].Tag.Substring(0, POIs[a].Tag.IndexOf('\n')) + "\n" + Point.Position.ToString();
+                    break;
+                }
+            }
+
+            if (_POIModified != null)
+                _POIModified(null, null);
+        }
+
+        public static void POIMove(GMarkerGoogle Point)
         {
             for (int a = 0; a < POI.POIs.Count; a++)
             {
@@ -213,13 +270,32 @@ namespace MissionPlanner.Utilities
 
             poioverlay.Clear();
 
+            System.Drawing.Bitmap mbpFuego = Resources.fire_danger;
+            System.Drawing.Bitmap mbpElect = Resources.electric_danger;
             foreach (var pnt in POIs)
             {
-                poioverlay.Markers.Add(new GMapMarkerPOI(pnt)
+                if (pnt.Tag.Contains("Fuego"))
                 {
-                    ToolTipMode = MarkerTooltipMode.OnMouseOver,
-                    ToolTipText = pnt.Tag
-                });
+                    GMapMarker marker = new GMarkerGoogle(pnt, mbpFuego);
+                    marker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+                    marker.ToolTipText = pnt.Tag;
+                    poioverlay.Markers.Add(marker);
+                }
+                else if (pnt.Tag.Contains("Electrico"))
+                {
+                    GMapMarker marker = new GMarkerGoogle(pnt, mbpElect);
+                    marker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+                    marker.ToolTipText = pnt.Tag;
+                    poioverlay.Markers.Add(marker);
+                }
+                else
+                {
+                    poioverlay.Markers.Add(new GMapMarkerPOI(pnt)
+                    {
+                        ToolTipMode = MarkerTooltipMode.OnMouseOver,
+                        ToolTipText = pnt.Tag
+                    });
+                }
             }
         }
     }

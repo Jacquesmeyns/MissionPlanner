@@ -194,6 +194,8 @@ namespace MissionPlanner.GCSViews
             this.poiaddToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poideleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poieditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addFireToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addElectricHazardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trackerHomeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modifyAltToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enterUTMCoordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1283,7 +1285,9 @@ namespace MissionPlanner.GCSViews
             this.pOIToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.poiaddToolStripMenuItem,
             this.poideleteToolStripMenuItem,
-            this.poieditToolStripMenuItem});
+            this.poieditToolStripMenuItem,
+            this.addFireToolStripMenuItem,
+            this.addElectricHazardToolStripMenuItem});
             this.pOIToolStripMenuItem.Name = "pOIToolStripMenuItem";
             resources.ApplyResources(this.pOIToolStripMenuItem, "pOIToolStripMenuItem");
             // 
@@ -1304,6 +1308,20 @@ namespace MissionPlanner.GCSViews
             this.poieditToolStripMenuItem.Name = "poieditToolStripMenuItem";
             resources.ApplyResources(this.poieditToolStripMenuItem, "poieditToolStripMenuItem");
             this.poieditToolStripMenuItem.Click += new System.EventHandler(this.poieditToolStripMenuItem_Click);
+            // 
+            // addFireToolStripMenuItem
+            // 
+            this.addFireToolStripMenuItem.Image = global::MissionPlanner.Properties.Resources.fire_danger;
+            this.addFireToolStripMenuItem.Name = "addFireToolStripMenuItem";
+            resources.ApplyResources(this.addFireToolStripMenuItem, "addFireToolStripMenuItem");
+            this.addFireToolStripMenuItem.Click += new System.EventHandler(this.addFireToolStripMenuItem_Click);
+            // 
+            // addElectricHazardToolStripMenuItem
+            // 
+            this.addElectricHazardToolStripMenuItem.Image = global::MissionPlanner.Properties.Resources.electric_danger;
+            this.addElectricHazardToolStripMenuItem.Name = "addElectricHazardToolStripMenuItem";
+            resources.ApplyResources(this.addElectricHazardToolStripMenuItem, "addElectricHazardToolStripMenuItem");
+            this.addElectricHazardToolStripMenuItem.Click += new System.EventHandler(this.addElectricHazardToolStripMenuItem_Click);
             // 
             // trackerHomeToolStripMenuItem
             // 
@@ -1672,5 +1690,7 @@ namespace MissionPlanner.GCSViews
         private ToolStripMenuItem fromCurrentWaypointsToolStripMenuItem;
         private ToolStripMenuItem offsetPolygonToolStripMenuItem;
         private ToolStripMenuItem offsetPolygonToolStripMenuItem2;
+        private ToolStripMenuItem addFireToolStripMenuItem;
+        private ToolStripMenuItem addElectricHazardToolStripMenuItem;
     }
 }
